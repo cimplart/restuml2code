@@ -1,0 +1,12 @@
+{
+    "restructuredtext.builtDocumentationPath" : "${workspaceRoot}/tests/autosar-module-1/_build/html",
+    "restructuredtext.confPath"               : "${workspaceFolder}\\tests\\autosar-module-1",
+    "restructuredtext.updateOnTextChanged"    : "true",
+    "restructuredtext.updateDelay"            : 1000,
+    "restructuredtext.sphinxBuildPath": "C:\\Program Files\\Python37\\Scripts\\sphinx-build.exe",
+    "restructuredtext.preview.scrollEditorWithPreview": false,
+    "restructuredtext.preview.scrollPreviewWithEditor": false,
+    "restructuredtext.languageServer.disabled": true,
+    "restructuredtext.preview.name": "sphinx",
+    "restructuredtext.preview.docutil.disabled": true
+}

@@ -1,0 +1,6 @@
+
+.. uml::
+
+    component Comp
+
+    
