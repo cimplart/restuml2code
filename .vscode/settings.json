@@ -8,5 +8,8 @@
     "restructuredtext.preview.scrollPreviewWithEditor": false,
     "restructuredtext.languageServer.disabled": true,
     "restructuredtext.preview.name": "sphinx",
-    "restructuredtext.preview.docutil.disabled": true
+    "restructuredtext.preview.docutil.disabled": true,
+    "python.analysis.extraPaths": [
+        "./src/restuml2code"
+    ]
 }

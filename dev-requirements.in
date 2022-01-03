@@ -1,3 +1,4 @@
 lark-parser
 pytest
 sphinx
+sphinxcontrib-plantuml
