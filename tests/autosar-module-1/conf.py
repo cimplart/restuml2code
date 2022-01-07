@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'test-autosar-module-1'
-copyright = '2021, A. Wisz'
+copyright = '2022, A. Wisz'
 author = 'A. Wisz'
 
 
