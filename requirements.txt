@@ -4,5 +4,7 @@
 #
 #    pip-compile
 #
-lark-parser==0.11.3
+mako==1.1.6
     # via -r requirements.in
+markupsafe==2.0.1
+    # via mako

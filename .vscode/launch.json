@@ -5,14 +5,35 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Current File with dump",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "args": [
+                "--input",
+                "tests/autosar-module-1/input.rst",
+                "--template",
+                "tests/autosar-module-1/template.h",
+                "--odir",
+                "tests/autosar-module-1/output",
+                "--dump"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
             "program": "${file}",
             "args": [
-                "--input", "tests/autosar-module-1/input.rst",
-                "--odir", "tests/autosar-module-1/output"
-            ],            
+                "--input",
+                "tests/autosar-module-1/input.rst",
+                "--template",
+                "tests/autosar-module-1/template.h",
+                "--odir",
+                "tests/autosar-module-1/output",
+                "--verbose"
+            ],
             "console": "integratedTerminal"
         }
     ]

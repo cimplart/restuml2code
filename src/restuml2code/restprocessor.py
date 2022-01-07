@@ -35,24 +35,29 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
         KeyEntry('Parameters [in-out]:', -1, 'inout-params', [_FUNCTION_TABLE]),
     ]
 
-    def __init__(self, doc, text) -> None:
+    def __init__(self, doc, text, verbose=False) -> None:
         super().__init__(doc)
         self._headers = {}
         self._lines = text.splitlines()
         self._state = self._PASS
+        self._verbose = verbose
+
+    def _verbose_print(self, *args, **kwargs):
+        if self._verbose:
+            print(*args, **kwargs)
 
     def visit_section(self, node: docutils.nodes.section) -> None:
         for c in node.children:
             if isinstance(c, docutils.nodes.title):
-                #print("Section title: " + c.astext())
+                self._verbose_print("Parsing section: " + c.astext())
                 current_section = c.astext()
                 if 'Module Interface Types' in current_section:
                     self._state = self._TYPE_TABLE
-                    print("Parsing module types")
+                    self._verbose_print("Parsing module types")
                     self._elem_section = node
                 elif 'Module Interface Functions' in current_section:
                     self._state = self._FUNCTION_TABLE
-                    print("Parsing module functions")
+                    self._verbose_print("Parsing module functions")
                     self._elem_section = node
                 break
 
@@ -66,7 +71,6 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
         self._elem_attributes = {}
 
     def depart_table(self, node):
-        #print("End Table")
         self.rownum = -1
         if self._state != self._PASS and 'header' in self._elem_attributes:
             header = self._elem_attributes['header']
@@ -75,6 +79,9 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
             self._headers[header].setdefault('types', [])
             if self._state == self._FUNCTION_TABLE:
                 #TODO check function attributes
+                self._elem_attributes.setdefault('in-params', [])
+                self._elem_attributes.setdefault('out-params', [])
+                self._elem_attributes.setdefault('inout-params', [])
                 self._headers[header]['functions'].append(self._elem_attributes)
             elif self._state == self._TYPE_TABLE:
                 #TODO check type attributes
@@ -84,7 +91,7 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
 
     def visit_row(self, node):
         self.rownum += 1
-        print("table row " + str(self.rownum))
+        #print("table row " + str(self.rownum) + ' has ' + str(len(node.children)) + " elems")
 
     # Nested rows (e.g. function parameters) have the 1st column omitted by the grid table parser,
     # so we have to figure out the column number depending on the count of '|' before the paragraph text.
@@ -100,8 +107,8 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
         if self.rownum > 0 and self._state != self._PASS:
             colnum = self.get_colnum(node, content)
 
-            row_label_found = False
             if colnum == 1:
+                row_label_found = False
                 for row_spec in self._ROW_KEYS:
                     if row_spec.row_label in content and self._state in row_spec.tables:
                         if row_spec.rownum > -1:
@@ -128,7 +135,10 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
                             elif colnum == 3:
                                 self._elem_attributes[self._attr_to_add][-1]['field'] = content
                             elif colnum == 4:
-                                self._elem_attributes[self._attr_to_add][-1]['description'] = content
+                                self._elem_attributes[self._attr_to_add][-1]['description'] = content.replace('\n', ' ')
+                        elif self._attr_to_add == 'type':
+                            self._assert_syntax(colnum == 2)
+                            self._elem_attributes[self._attr_to_add] = content
                 elif self._state == self._FUNCTION_TABLE:
                     if self.rownum <= 6:
                         self._assert_syntax(colnum == 2, node.line)
@@ -146,14 +156,33 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
                                 content = 'void'
                             self._elem_attributes[self._attr_to_add] = { 'type': content }
                         else:
-                            self._elem_attributes[self._attr_to_add]['description'] = content
+                            self._elem_attributes[self._attr_to_add]['description'] = content.replace('\n', ' ')
                     else:
                         self._assert_syntax(colnum in [2, 3], node.line)
                         self._elem_attributes.setdefault(self._attr_to_add, [])
                         if colnum == 2:
                             self._elem_attributes[self._attr_to_add].append({ 'name': content })
                         else:
-                            self._elem_attributes[self._attr_to_add][-1]['description'] = content
+                            self._elem_attributes[self._attr_to_add][-1]['description'] = content.replace('\n', ' ')
+
+    def _strip_code_block(self, str):
+        return str.replace('.. code-block::', '').strip()
+
+    # code blocks are handled here
+    def visit_literal_block(self, node: docutils.nodes.literal_block) -> None:
+        content = node.astext()
+        if self.rownum > 0 and self._state != self._PASS:
+            # literal_block node has no line
+            #colnum = self.get_colnum(node, content)
+
+            if self._state == self._TYPE_TABLE:
+                if self.rownum == 5:
+                    if self._attr_to_add == 'type':
+                        self._elem_attributes[self._attr_to_add] = self._strip_code_block(content)
+            elif self._state == self._FUNCTION_TABLE:
+                if self.rownum == 3:
+                    self._assert_syntax(self._attr_to_add not in self._elem_attributes, node.line)
+                    self._elem_attributes[self._attr_to_add] = self._strip_code_block(content)
 
 
     def visit_uml(self, node: uml) -> None:
