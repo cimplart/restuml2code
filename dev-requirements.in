@@ -3,3 +3,4 @@ mako
 pytest
 sphinx
 sphinxcontrib-plantuml
+twine

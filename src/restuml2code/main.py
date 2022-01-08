@@ -27,6 +27,7 @@ from mako.template import Template
 from mako.runtime import Context
 from mako import exceptions
 from io import StringIO
+import pkg_resources
 
 try:
     from .restprocessor import RestProcessor
@@ -61,6 +62,7 @@ def parse_rst(srcpath: str, text: str) -> docutils.nodes.document:
     return document
 
 def main():
+    print("restuml2code version ", pkg_resources.get_distribution('restuml2code').version)
     parser = ArgumentParser()
     parser.add_argument("-i", "--input", dest="input", help="rst input file", metavar="INPUT-FILE", required=True)
     parser.add_argument("-t", "--template", dest="templ", help="header template", metavar="TEMPLATE", required=True)

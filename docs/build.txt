@@ -1,0 +1,4 @@
+    python setup.py build
+    python setup.py sdist --formats=gztar
+    twine check dist/*
+    twine upload --verbose --repository testpypi dist/*
