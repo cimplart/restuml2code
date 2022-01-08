@@ -1,4 +1,5 @@
-lark-parser
+docutils
+mako
 pytest
 sphinx
 sphinxcontrib-plantuml

@@ -18,9 +18,12 @@
 
 import docutils
 import docutils.nodes
-from uml import uml
-import re
 from typing import NamedTuple, Any, List
+
+try:
+    from .uml import uml
+except:
+    from uml import uml
 
 class RestProcessor(docutils.nodes.SparseNodeVisitor):
 

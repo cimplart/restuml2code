@@ -22,13 +22,18 @@ import docutils.utils
 import docutils.frontend
 from docutils.parsers.rst import Directive, directives
 from argparse import ArgumentParser
-from restprocessor import RestProcessor
-from uml import uml
 import json
 from mako.template import Template
 from mako.runtime import Context
 from mako import exceptions
 from io import StringIO
+
+try:
+    from .restprocessor import RestProcessor
+    from .uml import uml
+except:
+    from restprocessor import RestProcessor
+    from uml import uml
 
 class UmlDirective(Directive):
 

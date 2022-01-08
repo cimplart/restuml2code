@@ -21,7 +21,9 @@ colorama==0.4.4
     #   pytest
     #   sphinx
 docutils==0.17.1
-    # via sphinx
+    # via
+    #   -r dev-requirements.in
+    #   sphinx
 idna==3.2
     # via requests
 imagesize==1.2.0
@@ -34,10 +36,12 @@ iniconfig==1.1.1
     # via pytest
 jinja2==3.0.1
     # via sphinx
-lark-parser==0.11.3
+mako==1.1.6
     # via -r dev-requirements.in
 markupsafe==2.0.1
-    # via jinja2
+    # via
+    #   jinja2
+    #   mako
 packaging==21.0
     # via
     #   pytest
@@ -59,7 +63,9 @@ requests==2.26.0
 snowballstemmer==2.1.0
     # via sphinx
 sphinx==4.1.0
-    # via -r dev-requirements.in
+    # via
+    #   -r dev-requirements.in
+    #   sphinxcontrib-plantuml
 sphinxcontrib-applehelp==1.0.2
     # via sphinx
 sphinxcontrib-devhelp==1.0.2
@@ -68,6 +74,8 @@ sphinxcontrib-htmlhelp==2.0.0
     # via sphinx
 sphinxcontrib-jsmath==1.0.1
     # via sphinx
+sphinxcontrib-plantuml==0.22
+    # via -r dev-requirements.in
 sphinxcontrib-qthelp==1.0.3
     # via sphinx
 sphinxcontrib-serializinghtml==1.1.5
