@@ -1,6 +1,6 @@
 {
-    "restructuredtext.builtDocumentationPath" : "${workspaceRoot}/tests/autosar-module-1/_build/html",
-    "restructuredtext.confPath"               : "${workspaceFolder}\\tests\\autosar-module-1",
+    "restructuredtext.confPath": "${workspaceFolder}\\tests\\macros-enums",
+    "restructuredtext.builtDocumentationPath": "${workspaceFolder}/tests/macros-enums/_build/html",
     "restructuredtext.updateOnTextChanged"    : "true",
     "restructuredtext.updateDelay"            : 1000,
     "restructuredtext.sphinxBuildPath": "C:\\Program Files\\Python37\\Scripts\\sphinx-build.exe",
@@ -11,5 +11,5 @@
     "restructuredtext.preview.docutil.disabled": true,
     "python.analysis.extraPaths": [
         "./src/restuml2code"
-    ]
+    ],
 }

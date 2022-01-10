@@ -5,34 +5,41 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Module",
+            "name": "Test macros&enums",
             "type": "python",
             "request": "launch",
             "module": "restuml2code",
-            "env": {"PYTHONPATH": "${workspaceFolder}/src${env:PYTHONPATH}"},
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src${env:PYTHONPATH}"
+            },
             "args": [
                 "--input",
-                "tests/autosar-module-1/input.rst",
+                "tests/macros-enums/input.rst",
                 "--template",
-                "tests/autosar-module-1/template.h",
+                "tests/macros-enums/template.h",
                 "--odir",
-                "tests/autosar-module-1/output",
-                "--verbose"
+                "tests/macros-enums/output",
+                "--verbose",
+                "--dump"
             ],
             "console": "integratedTerminal"
         },
         {
-            "name": "Python: Current File with dump",
+            "name": "Test types&functions",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
+            "module": "restuml2code",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src${env:PYTHONPATH}"
+            },
             "args": [
                 "--input",
-                "tests/autosar-module-1/input.rst",
+                "tests/types-functions/input.rst",
                 "--template",
-                "tests/autosar-module-1/template.h",
+                "tests/types-functions/template.h",
                 "--odir",
-                "tests/autosar-module-1/output",
+                "tests/types-functions/output",
+                "--verbose",
                 "--dump"
             ],
             "console": "integratedTerminal"

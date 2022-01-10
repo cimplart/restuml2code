@@ -17,9 +17,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'test-autosar-module-1'
-copyright = '2022, A. Wisz'
-author = 'A. Wisz'
+project = 'Constants & enums test'
+copyright = '2022, CimplArt'
+author = 'CimplArt'
 
 
 # -- General configuration ---------------------------------------------------
@@ -48,10 +48,6 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # a list of builtin themes.
 #
 html_theme = 'classic'
-
-#html_theme_options = {
-#    "bgcolor" : "#f0e9d5"
-#}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

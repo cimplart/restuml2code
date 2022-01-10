@@ -28,6 +28,7 @@ from mako.runtime import Context
 from mako import exceptions
 from io import StringIO
 import pkg_resources
+import os
 
 try:
     from .restprocessor import RestProcessor
@@ -90,8 +91,19 @@ def main():
         visitor = RestProcessor(doc, text, args['verbose'])
         doc.walkabout(visitor)
 
+        if not os.path.exists(args['odir']):
+            if args['verbose']:
+                print("Creating output directory...")
+            os.mkdir(args['odir'])
+        elif not os.path.isdir(args['odir']):
+            print("ERROR: ", args['odir'], " is not a directory")
+
         for header in visitor._headers:
             try:
+                if args['dump']:
+                    print('------ Dump content for header: ', header, ' ------')
+                    dump = json.dumps(visitor._headers[header], indent=3)
+                    print(dump)
                 buf = StringIO()
                 ctx = Context(buf, file=header, content=visitor._headers[header])
                 header_templ.render_context(ctx)
@@ -99,10 +111,6 @@ def main():
                     print("Writing ", header)
                 with open(args['odir'] + '/' + header, "w") as outf:
                     outf.write(buf.getvalue())
-                if args['dump']:
-                    print('------ Dump content for header: ', header, ' ------')
-                    dump = json.dumps(visitor._headers[header], indent=3)
-                    print(dump)
             except:
                 print(exceptions.text_error_template().render())
 
