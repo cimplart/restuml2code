@@ -17,5 +17,20 @@
 #
 
 import docutils.nodes
+from lark import Lark
+import os
 
-class uml(docutils.nodes.General, docutils.nodes.Element): pass
+class uml(docutils.nodes.General, docutils.nodes.Element):
+
+    def __init__(self, rawsource='', *children, **attributes):
+
+        docutils.nodes.Element.__init__(self, rawsource, *children, **attributes)
+
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        grammar_file_path = os.path.join(dir_path, "puml.ebnf")
+        f = open(grammar_file_path)
+
+        parser = Lark(f.read(), debug=True)
+        self.parse_tree = parser.parse(rawsource)
+
+

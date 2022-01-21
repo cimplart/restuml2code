@@ -6,6 +6,8 @@
 #
 docutils==0.18.1
     # via -r requirements.in
+lark==1.0.0
+    # via -r requirements.in
 mako==1.1.6
     # via -r requirements.in
 markupsafe==2.0.1

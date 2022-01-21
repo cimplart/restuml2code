@@ -1,0 +1,109 @@
+
+start:  (skinparam  | nestable_element  | SKIP_TEXT)*
+
+skinparam: "skinparam" sparam svalue
+
+SKIP_TEXT: "left to right direction" | "allow_mixing"
+
+nestable_element: class | component | interface | artifact | rectangle | relation
+
+component: "component" component_name stereotype?
+
+interface: "interface" interface_name stereotype? element_body?
+
+artifact: "artifact" artifact_name stereotype? nested_group?
+
+class: "class" class_name stereotype? element_body?
+
+rectangle: "rectangle" rectangle_name nested_group?
+
+nested_group: "{" (nestable_element)* "}"
+
+element_body: "{" (attribute | method)* "}"
+
+attribute: att_scope? visibility? variable
+          | visibility? att_scope? variable
+          | att_scope? visibility? text_field
+          | visibility? att_scope? text_field
+
+method: att_scope? visibility? function
+      | visibility? att_scope? function
+      | att_scope? visibility? text_method
+      | visibility? att_scope? text_method
+
+att_scope: "{static}" -> static
+         | "{abstract}" -> abstract
+
+visibility: "+" -> public
+          | "-" -> private
+          | "#" -> protected
+          | "~" -> package
+
+variable: var ":" type
+        | var ":" type "[]"
+        | var ":" type "*"
+        | type var
+        | type "[]" var
+        | type "*" var
+        | type
+        | var
+
+text_field: "{field}" field_text
+
+function: method_name "(" param_list ")" ":" type
+        | type method_name "(" param_list ")"
+
+text_method: "{method}" method_text
+
+param_list: [variable ("," variable)*]
+
+stereotype: "<<" stereotype_name ">>"
+
+//relation: dependency | extension | composition | aggregation
+relation: dependency | association | any_hidden_relation
+
+dependency: relation_from LEFT_DEPEND_ARROW relation_to [":" stereotype? relation_text?]
+          | relation_to RIGHT_DEPEND_ARROW relation_from [":" stereotype? relation_text?]
+
+LEFT_DEPEND_ARROW: /\.+[lurd]?\.+>/
+RIGHT_DEPEND_ARROW: /<\.+[lurd]?\.+/
+
+association: relation_from /-+[lurd]?-+/ relation_to [":" stereotype? relation_text?]
+
+any_hidden_relation: relation_from HIDDEN_ARROW relation_to
+
+HIDDEN_ARROW: /[-.<>]+\[hidden\][-.<>]+/
+
+class_name: CNAME
+component_name: CNAME
+interface_name: CNAME
+artifact_name: ANAME
+rectangle_name: CNAME
+relation_from: ANAME
+relation_to: ANAME
+sparam: CNAME
+svalue: CNAME|WORD|ESCAPED_STRING|DIGIT|block
+attribute_name: CNAME
+method_name: CNAME
+stereotype_name: CNAME
+type: CNAME
+var: CNAME
+
+relation_text: (WORD|ESCAPED_STRING|DIGIT|">"|"<")*
+field_text: (WORD|ESCAPED_STRING|DIGIT)*
+method_text: (WORD|ESCAPED_STRING|DIGIT)*
+
+ANAME: ("_"|"."|LETTER) ("_"|"."|"-"|LETTER|DIGIT)*
+
+block: "{" (spb_param spb_value)+ "}"
+
+spb_param: CNAME
+spb_value: CNAME
+
+%import common.CNAME
+%import common.ESCAPED_STRING
+%import common.WORD
+%import common.LETTER
+%import common.DIGIT
+%import common.WS
+%ignore WS

@@ -4,3 +4,4 @@ pytest
 sphinx
 sphinxcontrib-plantuml
 twine
+lark

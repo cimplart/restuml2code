@@ -51,7 +51,6 @@ class UmlDirective(Directive):
         self.assert_has_content()
         text = '\n'.join(self.content)
         uml_node = self.node_class(rawsource=text)
-        # TODO Parse the directive contents.
         return [uml_node]
 
 def parse_rst(srcpath: str, text: str) -> docutils.nodes.document:

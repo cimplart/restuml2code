@@ -268,7 +268,7 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
 
     def visit_uml(self, node: uml) -> None:
         #print('uml: ' + node.rawsource)
-        pass
+        print(node.parse_tree.pretty())
 
     def depart_uml(self, node: uml) -> None:
         pass
