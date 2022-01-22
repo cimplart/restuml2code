@@ -22,8 +22,10 @@ from typing import NamedTuple, Any, List, Dict
 
 try:
     from .uml import uml
+    from .umldependencyscanner import UmlDependencyScanner
 except:
     from uml import uml
+    from umldependencyscanner import UmlDependencyScanner
 
 class RestProcessor(docutils.nodes.SparseNodeVisitor):
 
@@ -33,6 +35,7 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
     _MACRO_CONSTANTS_TABLE=3
     _MACRO_FUNCTION_TABLE=4
     _ENUMERATION_TABLE=5
+    _SOURCE_FILE_DEPENDENCIES=6
 
     _STATE_LABELS = dict([ (_FUNCTION_TABLE, 'function table'),
                            (_TYPE_TABLE, 'type table'),
@@ -94,6 +97,10 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
                 elif 'Module Interface Constants' in current_section:
                     self._state = self._MACRO_CONSTANTS_TABLE
                     self._verbose_print("Parsing module constants")
+                    self._elem_section = node
+                elif 'Source File Dependencies' in current_section:
+                    self._state = self._SOURCE_FILE_DEPENDENCIES
+                    self._verbose_print("Parsing source file dependencies")
                     self._elem_section = node
                 break
 
@@ -267,8 +274,15 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
 
 
     def visit_uml(self, node: uml) -> None:
-        #print('uml: ' + node.rawsource)
-        print(node.parse_tree.pretty())
+        #print(node.parse_tree.pretty())
+        #print(str(node.parse_tree))
+        if self._state == self._SOURCE_FILE_DEPENDENCIES:
+            depScanner = UmlDependencyScanner()
+            depScanner.visit_topdown(tree=node.parse_tree)
+            for header in depScanner.header_deps:
+                self._headers.setdefault(header, {})
+                self._headers[header].setdefault('includes', [])
+                self._headers[header]['includes'].append(depScanner.header_deps[header])
 
     def depart_uml(self, node: uml) -> None:
         pass

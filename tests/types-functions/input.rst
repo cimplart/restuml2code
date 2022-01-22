@@ -32,11 +32,12 @@ Source File Dependencies
     artifact Det_MemMap.h <<header>>
     artifact SchM_Det.h <<header>>
 
-    Det.h ..> Std_Types.h: <<include>>
-    Det.c ..> Det.h: <<include>>
-    Det.c ..> Det_MemMap.h: <<include>>
-    Det.c ..> SchM_Det.h: <<include>>
-    Det.c ..> Rte_Det.h: <<include>>
+    Det.h ..> Std_Types.h : <<include>>
+    Det.c ..> Det.h : <<include>>
+    Det.c ..> Det_MemMap.h : <<include>>
+    Det.c ..> SchM_Det.h : <<include>>
+    Det.c ..> Rte_Det.h : <<include>>
+    Det.h ..> Rte_Det.h : <<include>>
 
 
 API Specification
@@ -52,7 +53,9 @@ Module Interface Types
 
     component Det
 
-    class Det_ConfigType <<structure>>
+    class Det_ConfigType <<structure>> {
+        int x
+    }
 
     Det -- Det_ConfigType
 

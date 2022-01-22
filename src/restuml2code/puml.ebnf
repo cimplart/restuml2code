@@ -62,13 +62,13 @@ stereotype: "<<" stereotype_name ">>"
 //relation: dependency | extension | composition | aggregation
 relation: dependency | association | any_hidden_relation
 
-dependency: relation_from LEFT_DEPEND_ARROW relation_to [":" stereotype? relation_text?]
-          | relation_to RIGHT_DEPEND_ARROW relation_from [":" stereotype? relation_text?]
+dependency: relation_from LEFT_DEPEND_ARROW relation_to [":" (stereotype | relation_text)]
+          | relation_to RIGHT_DEPEND_ARROW relation_from [":" (stereotype | relation_text)]
 
 LEFT_DEPEND_ARROW: /\.+[lurd]?\.+>/
 RIGHT_DEPEND_ARROW: /<\.+[lurd]?\.+/
 
-association: relation_from /-+[lurd]?-+/ relation_to [":" stereotype? relation_text?]
+association: relation_from /-+[lurd]?-+/ relation_to [":" (stereotype | relation_text)]
 
 any_hidden_relation: relation_from HIDDEN_ARROW relation_to
 
@@ -89,7 +89,7 @@ stereotype_name: CNAME
 type: CNAME
 var: CNAME
 
-relation_text: (WORD|ESCAPED_STRING|DIGIT|">"|"<")*
+relation_text: (">"|"<")? (WORD|ESCAPED_STRING|DIGIT)* (">"|"<")?
 field_text: (WORD|ESCAPED_STRING|DIGIT)*
 method_text: (WORD|ESCAPED_STRING|DIGIT)*
 
