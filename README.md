@@ -3,4 +3,5 @@ A tool for generating source codes from SW component design in reStructuredText 
 
 Dependencies:
 - docutils is used to parse reStructuredText files
-- mako is used to render code templates using the parsed document content.
+- mako is used to render code templates using the parsed document content
+- lark is used to parse puml sections.
