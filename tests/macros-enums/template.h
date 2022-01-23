@@ -19,6 +19,39 @@
 #define ${const_item['name']} (${const_item['value']})    ///< ${const_item['description']}
 </%def>                                                                 \
 ###
+### render_macro_function()
+###
+<%def name="render_macro_function(func_item)" filter="trim" >
+
+/**
+ * @brief ${get_brief(func_item['description'])}
+% for ipar in func_item['in-params']:
+ * @param[in] ${ipar['name']} - ${ipar['description']}
+% endfor
+% for opar in func_item['out-params']:
+ * @param[out] ${opar['name']} - ${opar['description']}
+% endfor
+% for iopar in func_item['inout-params']:
+ * @param[in-out] ${iopar['name']} - ${iopar['description']}
+% endfor
+% if func_item['return-value']['type'] != "void":
+ * @return ${func_item['return-value']['type']} - ${func_item['return-value']['description']}
+% endif
+ */
+% for def_item in func_item['definition']:
+% if def_item['prepro-conditional'] != '':
+${def_item['prepro-conditional']} ${def_item['condition']}
+% endif
+${func_item['syntax']}   <%text>\</%text>
+%for line in def_item['code']:
+    ${line}
+% endfor
+% endfor
+% if func_item['definition'][0]['prepro-conditional'] != '':
+#endif
+% endif
+</%def>
+###
 ### render_type()
 ###
 <%def name="render_type(type_item)" filter="trim">                      \
@@ -60,9 +93,13 @@ ${render_macro_constant(c)}
 
 % endfor
 
+% for mf in content['macro-functions']:
+${render_macro_function(mf)}
+
+% endfor
+
 % for t in content['types']:
 ${render_type(t)}
 
 % endfor
-
 #endif //TEST_${make_include_guard(file)}

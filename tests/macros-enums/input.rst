@@ -53,13 +53,23 @@ Module Interface Function-like Macros
     +--------------------------+--------------------------------------------------------------------------+
     | Identifier name:         | CANSM_DET_REPORTERROR                                                    |
     +==========================+==========================================================================+
-    | Description:             | Service to report development errors.                                    |
+    | Description:             | Service to report development errors                                     |
     +--------------------------+--------------------------------------------------------------------------+
     | Syntax:                  | .. code-block::                                                          |
     |                          |                                                                          |
     |                          |   #define CANSM_DET_REPORTERROR(ApiId, ErrorId)                          |
     +--------------------------+--------------------------------------------------------------------------+
     | Declared in:             | CanSM_Priv.h                                                             |
+    +--------------------------+--------------------------------------------------------------------------+
+    | May be called from ISR:  | Yes                                                                      |
+    +--------------------------+--------------------------------------------------------------------------+
+    | Reentrancy:              | Reentrant                                                                |
+    +--------------------------+------------------+-------------------------------------------------------+
+    | Return value:            | Std_ReturnType   | See description of Det_ReportError.                   |
+    +--------------------------+--------------+---+-------------------------------------------------------+
+    | Parameters [in]:         | ApiId        | ID of CanSM API service in which error is detected.       |
+    |                          +--------------+-----------------------------------------------------------+
+    |                          | ErrorId      | ID of detected CanSM development error                    |
     +--------------------------+--------------+-----------------------------------------------------------+
     | Definition:              | Condition:   | ``CANSM_DEV_ERROR_DETECT == STD_ON &&                     |
     |                          |              | CANSM_DEV_TEST == STD_OFF``                               |
@@ -73,7 +83,7 @@ Module Interface Function-like Macros
     |                          +--------------+-----------------------------------------------------------+
     |                          | Code:        | .. code-block::                                           |
     |                          |              |                                                           |
-    |                          |              |   CANSM_TEST_CHECK_ERROR(serviceId, errorId);             |
+    |                          |              |   CANSM_TEST_CHECK_ERROR(serviceId, errorId);  \          |
     |                          |              |   Det_ReportError(MODULE_ID_CANSM, 0, serviceId, errorId) |
     |                          +--------------+-----------------------------------------------------------+
     |                          | Condition:   | default                                                   |
@@ -82,16 +92,35 @@ Module Interface Function-like Macros
     |                          |              |                                                           |
     |                          |              |   /* No code */                                           |
     +--------------------------+--------------+-----------------------------------------------------------+
-    | May be called from ISR:  | Yes                                                                      |
+
+.. table::
+    :align: left
+
     +--------------------------+--------------------------------------------------------------------------+
-    | Reentrancy:              | Reentrant                                                                |
+    | Identifier name:         | DEM_REPORT_ERROR_STATUS                                                  |
+    +==========================+==========================================================================+
+    | Description:             | Service to report diagnostic events.                                     |
+    +--------------------------+--------------------------------------------------------------------------+
+    | Syntax:                  | .. code-block::                                                          |
+    |                          |                                                                          |
+    |                          |   #define DEM_REPORT_ERROR_STATUS(Event, Eventstatus)                    |
+    +--------------------------+--------------------------------------------------------------------------+
+    | Declared in:             | CanSM_Priv.h                                                             |
+    +--------------------------+--------------------------------------------------------------------------+
+    | May be called from ISR:  | No                                                                       |
+    +--------------------------+--------------------------------------------------------------------------+
+    | Reentrancy:              | Reentrant for different EventIds. Non reentrant for the same EventId.    |
     +--------------------------+------------------+-------------------------------------------------------+
     | Return value:            | Std_ReturnType   | See description of Det_ReportError.                   |
-    +--------------------------+------------+-----+-------------------------------------------------------+
-    | Parameters [in]:         | ApiId      | ID of CanSM API service in which error is detected.         |
-    |                          +------------+-------------------------------------------------------------+
-    |                          | ErrorId    | ID of detected CanSM development error                      |
-    +--------------------------+------------+-------------------------------------------------------------+
+    +--------------------------+--------------+---+-------------------------------------------------------+
+    | Parameters [in]:         | Event        | Identification of an event by assigned Event ID.          |
+    |                          +--------------+-----------------------------------------------------------+
+    |                          | EventStatus  | Monitor test result                                       |
+    +--------------------------+--------------+-----------------------------------------------------------+
+    | Definition:              |  Code:       | .. code-block::                                           |
+    |                          |              |                                                           |
+    |                          |              |    Dem_ReportErrorStatus(Event, EventStatus)              |
+    +--------------------------+--------------+-----------------------------------------------------------+
 
 
 Module Interface Types
