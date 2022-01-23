@@ -56,6 +56,10 @@ ${func_item['syntax']};
 #ifndef TEST_${make_include_guard(file)}
 #define TEST_${make_include_guard(file)}
 
+% for i in content['includes']:
+#include "${i}"
+% endfor
+
 % for t in content['types']:
     ${render_type(t)}
 % endfor
