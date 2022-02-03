@@ -5,7 +5,8 @@ setup(
     name="restuml2code",
     install_requires=[
         'docutils>=0.16,<0.18',
-        'mako>=1.1.6'
+        'mako>=1.1.6',
+        'lark>=1.0.0'
     ],
     extras_require={
     },

@@ -22,15 +22,23 @@ import os
 
 class uml(docutils.nodes.General, docutils.nodes.Element):
 
+    def _skip_diagram(self, rawsource):
+        skip_patterns = [ "[*]", "state",                #skip state diagrams
+                          "participant", "actor", "boundary", "control", "entity",  #skip sequence diagrams
+                        ]
+        for p in skip_patterns:
+            if p in rawsource:
+                return True
+        return False
+
     def __init__(self, rawsource='', *children, **attributes):
 
         docutils.nodes.Element.__init__(self, rawsource, *children, **attributes)
 
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        grammar_file_path = os.path.join(dir_path, "puml.ebnf")
-        f = open(grammar_file_path)
+        if not self._skip_diagram(rawsource):
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            grammar_file_path = os.path.join(dir_path, "puml.ebnf")
+            f = open(grammar_file_path)
 
-        parser = Lark(f.read(), debug=True)
-        self.parse_tree = parser.parse(rawsource)
-
-
+            parser = Lark(f.read(), debug=True)
+            self.parse_tree = parser.parse(rawsource + '\n')

@@ -5,13 +5,19 @@ skinparam: "skinparam" sparam svalue
 
 SKIP_TEXT: "left to right direction" | "allow_mixing"
 
-nestable_element: class | component | interface | artifact | rectangle | relation
+nestable_element: class | component | interface | artifact | folder | rectangle | relation
 
 component: "component" component_name stereotype?
+        | "[" component_name "]" stereotype?
+        | "component" DOUBLE_QUOTE LABEL DOUBLE_QUOTE "as" component_name stereotype?
 
 interface: "interface" interface_name stereotype? element_body?
+        | "interface" DOUBLE_QUOTE LABEL DOUBLE_QUOTE "as" interface_name stereotype? element_body?
 
 artifact: "artifact" artifact_name stereotype? nested_group?
+
+folder: "folder" folder_name stereotype? nested_group?
+        | "folder" DOUBLE_QUOTE LABEL DOUBLE_QUOTE "as" folder_name stereotype? nested_group?
 
 class: "class" class_name stereotype? element_body?
 
@@ -78,6 +84,7 @@ class_name: CNAME
 component_name: CNAME
 interface_name: CNAME
 artifact_name: ANAME
+folder_name: ANAME
 rectangle_name: CNAME
 relation_from: ANAME
 relation_to: ANAME
@@ -94,11 +101,15 @@ field_text: (WORD|ESCAPED_STRING|DIGIT)*
 method_text: (WORD|ESCAPED_STRING|DIGIT)*
 
 ANAME: ("_"|"."|LETTER) ("_"|"."|"-"|LETTER|DIGIT)*
+LCOMMENT: /'[^\n]*/(NEWLINE)
+LABEL: ("_"|"."|LETTER|"/") ("_"|"-"|"."|"/"|WS|LETTER|DIGIT)*
 
 block: "{" (spb_param spb_value)+ "}"
 
 spb_param: CNAME
 spb_value: CNAME
+
+DOUBLE_QUOTE : "\""
 
 %import common.CNAME
 %import common.ESCAPED_STRING
@@ -106,4 +117,6 @@ spb_value: CNAME
 %import common.LETTER
 %import common.DIGIT
 %import common.WS
+%import common.NEWLINE
 %ignore WS
+%ignore LCOMMENT

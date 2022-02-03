@@ -4,7 +4,7 @@
 #
 #    pip-compile
 #
-docutils==0.18.1
+docutils==0.17.1
     # via -r requirements.in
 lark==1.0.0
     # via -r requirements.in

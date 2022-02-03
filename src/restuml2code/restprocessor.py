@@ -62,7 +62,8 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
         KeyEntry('Parameters [in]:', 'in-params', dict([(_FUNCTION_TABLE, -1), (_MACRO_FUNCTION_TABLE, -1)])),
         KeyEntry('Parameters [out]:', 'out-params', dict([(_FUNCTION_TABLE, -1), (_MACRO_FUNCTION_TABLE, -1)])),
         KeyEntry('Parameters [in-out]:', 'inout-params', dict([(_FUNCTION_TABLE, -1), (_MACRO_FUNCTION_TABLE, -1)])),
-        KeyEntry('Definition:', 'definition', dict([(_MACRO_FUNCTION_TABLE, -1)]))
+        KeyEntry('Definition:', 'definition', dict([(_MACRO_FUNCTION_TABLE, -1)])),
+        KeyEntry('Call cycle interval:', 'call-cycle-interval', dict([(_FUNCTION_TABLE, -1), (_MACRO_FUNCTION_TABLE, -1)]))
     ]
 
     def __init__(self, doc, text, verbose=False) -> None:
@@ -71,6 +72,7 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
         self._lines = text.splitlines()
         self._state = self._PASS
         self._verbose = verbose
+        self.rownum = -1
 
     def _verbose_print(self, *args, **kwargs):
         if self._verbose:
@@ -100,6 +102,14 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
             if node == self._elem_section:
                 self._state = self._PASS
 
+    def _add_header(self, header):
+        self._headers.setdefault(header, {})
+        self._headers[header].setdefault('functions', [])
+        self._headers[header].setdefault('types', [])
+        self._headers[header].setdefault('macro-constants', [])
+        self._headers[header].setdefault('macro-functions', [])
+        self._headers[header].setdefault('includes', [])
+
     def visit_table(self, node: docutils.nodes.table) -> None:
         self.rownum = 0
         self._elem_attributes = {}
@@ -108,12 +118,8 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
         self.rownum = -1
         if self._state != self._PASS and 'header' in self._elem_attributes:
             header = self._elem_attributes['header']
-            self._headers.setdefault(header, {})
-            self._headers[header].setdefault('functions', [])
-            self._headers[header].setdefault('types', [])
-            self._headers[header].setdefault('macro-constants', [])
-            self._headers[header].setdefault('macro-functions', [])
-            self._headers[header].setdefault('includes', [])
+            if header not in self._headers:
+                self._add_header(header)
             if self._state == self._FUNCTION_TABLE:
                 #TODO check function attributes
                 self._elem_attributes.setdefault('in-params', [])
@@ -342,8 +348,8 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
             depScanner = UmlDependencyScanner()
             depScanner.visit_topdown(tree=node.parse_tree)
             for header in depScanner.header_deps:
-                self._headers.setdefault(header, {})
-                self._headers[header].setdefault('includes', [])
+                if header not in self._headers:
+                    self._add_header(header)
                 self._headers[header]['includes'] += depScanner.header_deps[header]
 
     def depart_uml(self, node: uml) -> None:
