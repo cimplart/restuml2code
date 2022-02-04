@@ -83,7 +83,9 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
         "Module Interface Functions" : _FUNCTION_TABLE,
         "Module Interface Constants" : _MACRO_CONSTANTS_TABLE,
         "Module Interface Function-like Macros" : _MACRO_FUNCTION_TABLE,
-        "Source File Dependencies" : _SOURCE_FILE_DEPENDENCIES
+        "Source File Dependencies" : _SOURCE_FILE_DEPENDENCIES,
+        "Module Compile-time Configuration" : _MACRO_CONSTANTS_TABLE,
+        "Module Link-time Configuration" : _TYPE_TABLE
     }
 
     def visit_section(self, node: docutils.nodes.section) -> None:
