@@ -1,5 +1,5 @@
 # restuml2code
-A tool for generating source codes from SW component design in reStructuredText format.
+A tool for generating C source headers from SW component design in reStructuredText format.
 
 Dependencies:
 - docutils is used to parse reStructuredText files
