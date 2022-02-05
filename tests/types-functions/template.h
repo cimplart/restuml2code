@@ -47,7 +47,7 @@ ${func_item['syntax']};
 
 /**!
  *
- * Header comment
+ * ${content['description']}
  *
  * Copyright ...
  *

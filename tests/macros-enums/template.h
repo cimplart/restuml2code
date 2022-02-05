@@ -76,7 +76,7 @@ typedef enum ${type_item['type-name']} {
 
 /**!
  *
- * Header comment
+ * ${content['description']}
  *
  * Copyright ...
  *

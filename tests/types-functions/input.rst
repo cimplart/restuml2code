@@ -2,8 +2,8 @@
 .. sectnum::
 
 
-Dependencies To Other Modules
-*****************************
+Structural Design
+*****************
 
 Expected Interfaces
 ===================
@@ -18,6 +18,27 @@ Expected Interfaces
     Det ..> Dlt_Det: <<optional>>
 
 
+Source File Description
+=======================
+
+.. table::
+    :align: left
+
+    +--------------+------------+-------------------------------------------+
+    | File:        | Generated: |  Description:                             |
+    +==============+============+===========================================+
+    | Det.h        |    Yes     | Main Det module header.                   |
+    +--------------+------------+-------------------------------------------+
+    | Det_Types.h  |    Yes     | Type declarations for the Det module.     |
+    +--------------+------------+-------------------------------------------+
+    | Det.c        |    No      | Module implementation code.               |
+    +--------------+------------+-------------------------------------------+
+    | Det_MemMap.h |    No      | Module memory map.                        |
+    +--------------+------------+-------------------------------------------+
+    | SchM_Det.h   |    No      | Module synchronization.                   |
+    +--------------+------------+-------------------------------------------+
+
+
 Source File Dependencies
 ========================
 
@@ -26,6 +47,7 @@ Source File Dependencies
     left to right direction
 
     artifact Std_Types.h <<header>>
+    artifact Det_Types.h <<header>>
     artifact Det.h <<header>>
     artifact Det.c <<source>>
     artifact Rte_Det.h <<header>>
@@ -33,6 +55,7 @@ Source File Dependencies
     artifact SchM_Det.h <<header>>
 
     Det.h ..> Std_Types.h : <<include>>
+    Det.h ..> Det_Types.h : <<include>>
     Det.c ..> Det.h : <<include>>
     Det.c ..> Det_MemMap.h : <<include>>
     Det.c ..> SchM_Det.h : <<include>>

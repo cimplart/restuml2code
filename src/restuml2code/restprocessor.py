@@ -35,6 +35,7 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
     _MACRO_CONSTANTS_TABLE='macro_constants_table'
     _MACRO_FUNCTION_TABLE='macro_function_table'
     _SOURCE_FILE_DEPENDENCIES='source_file_dependencies'
+    _SOURCE_FILE_TABLE='file_table'
 
     class KeyEntry(NamedTuple):
         row_label: str
@@ -85,7 +86,8 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
         "Module Interface Function-like Macros" : _MACRO_FUNCTION_TABLE,
         "Source File Dependencies" : _SOURCE_FILE_DEPENDENCIES,
         "Module Compile-time Configuration" : _MACRO_CONSTANTS_TABLE,
-        "Module Link-time Configuration" : _TYPE_TABLE
+        "Module Link-time Configuration" : _TYPE_TABLE,
+        "Source File Description" : _SOURCE_FILE_TABLE
     }
 
     def visit_section(self, node: docutils.nodes.section) -> None:
@@ -111,6 +113,8 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
         self._headers[header].setdefault('macro-constants', [])
         self._headers[header].setdefault('macro-functions', [])
         self._headers[header].setdefault('includes', [])
+        self._headers[header].setdefault('description', '')
+        self._headers[header].setdefault('generated', False)
 
     def visit_table(self, node: docutils.nodes.table) -> None:
         self.rownum = 0
@@ -139,6 +143,8 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
                 self._elem_attributes.setdefault('out-params', [])
                 self._elem_attributes.setdefault('inout-params', [])
                 self._headers[header]['macro-functions'].append(self._elem_attributes)
+        elif self._state == self._SOURCE_FILE_TABLE:
+            pass
         elif self._state != self._PASS:
             raise RuntimeError('Invalid syntax: missing header in SW element specification')
 
@@ -286,13 +292,37 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
                     else:
                         self._elem_attributes[self._attr_to_add][-1]['prepro-conditional'] = "#else"
 
+    def _add_file_description(self, colnum, node, content):
+        if self.rownum == 1:
+            if colnum == 1:
+                self._assert_syntax("File" in content, node.line)
+            elif colnum == 2:
+                self._assert_syntax("Generated" in content, node.line)
+            elif colnum == 3:
+                self._assert_syntax("Description" in content, node.line)
+            else:
+                self._assert_syntax(False, "Too many columns in source file table")
+        else:
+            if colnum == 1:
+                self._file_to_add = content.strip()
+            elif colnum == 2:
+                self._file_is_generated = (content.strip().lower() == 'yes')
+            elif colnum == 3:
+                if self._file_to_add[-2:] == '.h':
+                    if self._file_to_add not in self._headers:
+                        self._add_header(self._file_to_add)
+                    self._headers[self._file_to_add]['description'] = content.replace('\n', ' ').strip()
+                    self._headers[self._file_to_add]['generated'] = self._file_is_generated
+
 
     def visit_paragraph(self, node: docutils.nodes.paragraph) -> None:
         content = node.astext()
         if self.rownum > 0 and self._state != self._PASS:
             colnum = self.get_colnum(node, content)
 
-            if colnum == 1:
+            if self._state == self._SOURCE_FILE_TABLE:
+                self._add_file_description(colnum, node, content)
+            elif colnum == 1:
                 row_label_found = False
                 for row_spec in self._ROW_KEYS:
                     if row_spec.row_label in content and self._state in row_spec.tables.keys():

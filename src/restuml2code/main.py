@@ -103,13 +103,17 @@ def main():
                     print('------ Dump content for header: ', header, ' ------')
                     dump = json.dumps(visitor._headers[header], indent=3)
                     print(dump)
-                buf = StringIO()
-                ctx = Context(buf, file=header, content=visitor._headers[header])
-                header_templ.render_context(ctx)
-                if args['verbose']:
-                    print("Writing ", header)
-                with open(args['odir'] + '/' + header, "w") as outf:
-                    outf.write(buf.getvalue())
+                if visitor._headers[header]['generated']:
+                    buf = StringIO()
+                    ctx = Context(buf, file=header, content=visitor._headers[header])
+                    header_templ.render_context(ctx)
+                    if args['verbose']:
+                        print("Writing ", header)
+                    with open(args['odir'] + '/' + header, "w") as outf:
+                        outf.write(buf.getvalue())
+                else:
+                    if args['verbose']:
+                        print("Skip writing ", header)
             except:
                 print(exceptions.text_error_template().render())
 
