@@ -11,7 +11,10 @@
 ### render_type() ###
 <%def name="render_type(type_item)">            \
 
-/** ${type_item['description']} */
+/**
+ * ${type_item['description']}
+ * @ingroup ${content['module']}
+ */
 % if type_item['kind'] == 'Typedef':
 typedef ${type_item['type']};
 % elif type_item['kind'] == 'Structure':
@@ -28,6 +31,8 @@ typedef struct ${type_item['type-name']} {
 
 /**
  * @brief ${get_brief(func_item['description'])}
+ * @ingroup ${content['module']}
+ *
 % for ipar in func_item['in-params']:
  * @param[in] ${ipar['name']} - ${ipar['description']}
 % endfor
@@ -55,7 +60,13 @@ ${func_item['syntax']};
 
 #ifndef TEST_${make_include_guard(file)}
 #define TEST_${make_include_guard(file)}
+% if content['file-name'] == content['module'] + '.h':
 
+/*!
+ * @defgroup ${content['module']} ${content['module']}
+ */
+
+% endif
 % for i in content['includes']:
 #include "${i}"
 % endfor

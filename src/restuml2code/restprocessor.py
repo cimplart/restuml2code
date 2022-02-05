@@ -74,6 +74,7 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
         self._state = self._PASS
         self._verbose = verbose
         self.rownum = -1
+        self._globals = {}
 
     def _verbose_print(self, *args, **kwargs):
         if self._verbose:
@@ -89,6 +90,21 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
         "Module Link-time Configuration" : _TYPE_TABLE,
         "Source File Description" : _SOURCE_FILE_TABLE
     }
+
+    class HeaderAttribute(NamedTuple):
+        name: str
+        default: Any
+
+    _HEADER_ATTRIBUTES = [
+        HeaderAttribute('functions', []),
+        HeaderAttribute('types', []),
+        HeaderAttribute('macro-constants', []),
+        HeaderAttribute('macro-functions', []),
+        HeaderAttribute('includes', []),
+        HeaderAttribute('file-name', ''),
+        HeaderAttribute('description', ''),
+        HeaderAttribute('generated', False)
+    ]
 
     def visit_section(self, node: docutils.nodes.section) -> None:
         for c in node.children:
@@ -108,13 +124,9 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
 
     def _add_header(self, header):
         self._headers.setdefault(header, {})
-        self._headers[header].setdefault('functions', [])
-        self._headers[header].setdefault('types', [])
-        self._headers[header].setdefault('macro-constants', [])
-        self._headers[header].setdefault('macro-functions', [])
-        self._headers[header].setdefault('includes', [])
-        self._headers[header].setdefault('description', '')
-        self._headers[header].setdefault('generated', False)
+        for hattr in self._HEADER_ATTRIBUTES:
+            self._headers[header].setdefault(hattr.name, hattr.default)
+        self._headers[header]['file-name'] = header
 
     def visit_table(self, node: docutils.nodes.table) -> None:
         self.rownum = 0
@@ -150,7 +162,6 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
 
     def visit_row(self, node):
         self.rownum += 1
-        #print("table row " + str(self.rownum) + ' has ' + str(len(node.children)) + " elems")
 
     # Nested rows (e.g. function parameters) have the 1st column omitted by the grid table parser,
     # so we have to figure out the column number depending on the count of '|' before the paragraph text.
@@ -374,8 +385,6 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
 
 
     def visit_uml(self, node: uml) -> None:
-        #print(node.parse_tree.pretty())
-        #print(str(node.parse_tree))
         if self._state == self._SOURCE_FILE_DEPENDENCIES:
             depScanner = UmlDependencyScanner()
             depScanner.visit_topdown(tree=node.parse_tree)
@@ -387,16 +396,40 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
     def depart_uml(self, node: uml) -> None:
         pass
 
+    def visit_field(self, node: docutils.nodes.field) -> None:
+        field_body = ''
+        for c in node.children:
+            if isinstance(c, docutils.nodes.field_name):
+                field_name = c.astext()
+            elif isinstance(c, docutils.nodes.field_body):
+                field_body = c.astext().strip()
+        if self._state == self._PASS:
+            #global field
+            #Any global field may be added to header attributes except for the reserved ones.
+            if field_name in [ a.name for a in self._HEADER_ATTRIBUTES ]:
+                self._assert_syntax(False, node.line, msg = "'" + field_name + "' cannot be used for a global field name" )
+            else:
+                self._globals[field_name] = field_body
+
+    # Copy global attributes to all headers.
+    def depart_document(self, node: docutils.nodes.document) -> None:
+        for gf in self._globals:
+            for header in self._headers:
+                self._headers[header][gf] = self._globals[gf]
+
+
     def unknown_visit(self, node: docutils.nodes.Node) -> None:
         """Called for all other node types."""
-        #print('Unknown node: ' + str(node))
 
         #if isinstance(node, docutils.nodes.Element):
         #    print("Unknown element: " + node.astext())
         pass
 
-    def _assert_syntax(self, condition, line):
+    def _assert_syntax(self, condition, line, msg = ''):
         if not condition:
-            msg = 'Invalid syntax on line ' + str(line)
+            if len(msg) == 0:
+                msg = 'Error (line ' + str(line) +'): invalid syntax'
+            else:
+                msg = 'Error (line ' + str(line) +'): ' + msg
             print(msg)
             raise RuntimeError(msg)

@@ -1,6 +1,5 @@
 
-.. sectnum::
-
+:module: Det
 
 Structural Design
 *****************
