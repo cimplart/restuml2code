@@ -3,7 +3,7 @@ start:  (skinparam  | nestable_element  | SKIP_TEXT)*
 
 skinparam: "skinparam" sparam svalue
 
-SKIP_TEXT: "left to right direction" | "allow_mixing"
+SKIP_TEXT: "left to right direction" | "allow_mixing" | ":restuml2code:" | "@startuml" | "@enduml"
 
 nestable_element: class | component | interface | artifact | folder | rectangle | relation
 

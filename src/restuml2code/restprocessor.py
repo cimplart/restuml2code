@@ -425,6 +425,8 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
     def visit_uml(self, node: uml) -> None:
         if self._state == self._SOURCE_FILE_DEPENDENCIES:
             depScanner = UmlDependencyScanner()
+            self._assert_syntax(hasattr(node, 'parse_tree'), node.line,
+                                        msg='File dependency diagram not found, or missing :restuml2code: directive')
             depScanner.visit_topdown(tree=node.parse_tree)
             for header in depScanner.header_deps:
                 if header not in self._headers:

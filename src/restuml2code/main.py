@@ -115,7 +115,7 @@ def main():
                     if args['verbose']:
                         print("Skip writing ", header)
             except:
-                print(exceptions.text_error_template().render())
+                print('Exception while rendering ' + header + ': ' + exceptions.text_error_template().render())
 
     if args['verbose']:
         print("Done.")

@@ -43,6 +43,10 @@ Source File Dependencies
 
 .. uml::
 
+    :restuml2code:
+
+    @startuml
+
     left to right direction
 
     artifact Std_Types.h <<header>>
@@ -60,7 +64,7 @@ Source File Dependencies
     Det.c ..> SchM_Det.h : <<include>>
     Det.c ..> Rte_Det.h : <<include>>
     Det.h ..> Rte_Det.h : <<include>>
-
+    @enduml
 
 API Specification
 *****************
