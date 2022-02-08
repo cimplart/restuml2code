@@ -4,6 +4,8 @@
 Structural Design
 *****************
 
+See :ref:`ref-label`
+
 Expected Interfaces
 ===================
 
@@ -240,3 +242,7 @@ Det_ReportError
     |                          |            | (defined in SWS of calling module)            |
     +--------------------------+------------+-----------------------------------------------+
 
+.. _ref-label:
+
+Some chapter
+------------

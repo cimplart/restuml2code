@@ -20,7 +20,7 @@ import docutils.nodes
 import docutils.parsers.rst
 import docutils.utils
 import docutils.frontend
-from docutils.parsers.rst import Directive, directives
+from docutils.parsers.rst import Directive, directives, roles
 from argparse import ArgumentParser
 import json
 from mako.template import Template
@@ -61,6 +61,13 @@ def parse_rst(srcpath: str, text: str) -> docutils.nodes.document:
     parser.parse(text, document)
     return document
 
+def sphinx_role_fn(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    return [], []
+
+sphinx_roles = ['ref', 'any', 'doc', 'download', 'numref', 'envvar', 'token', 'keyword', 'option', 'term',
+                'math', 'eq', 'abbr', 'command', 'dfn', 'file', 'guilabel', 'kbd', 'mailheader', 'makevar', 'manpage',
+                'menuselection', 'mimetype', 'newsgroup', 'program', 'regexp', 'samp', 'pep', 'rfc' ]
+
 def main():
     print("restuml2code version ", pkg_resources.get_distribution('restuml2code').version)
     parser = ArgumentParser()
@@ -74,6 +81,10 @@ def main():
     args = vars(parser.parse_args())
 
     directives.register_directive('uml', UmlDirective)
+
+    # Prevent the 'Unknown interpreted text role' errors from docutils parser.
+    for role in sphinx_roles:
+        roles.register_local_role(role, sphinx_role_fn)
 
     with open(args['templ'], 'r') as f:
         templ_str = f.read()
