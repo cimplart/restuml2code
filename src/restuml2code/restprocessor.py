@@ -383,6 +383,8 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
                     elem_type = self._state.replace('_', ' ')
                     print("WARNING: unrecognized " + elem_type + " attribute " + content)
             else:
+                if self._state == self._FUNCTION_TABLE and content == "'...":
+                    content = "..."
                 add_method_name = '_add_' + self._state.replace('_table', '') + '_attribute'
                 add_method = getattr(self, add_method_name)
                 add_method(colnum, node, content)
