@@ -23,9 +23,11 @@ import copy
 
 try:
     from .uml import uml
+    from .item import item
     from .umldependencyscanner import UmlDependencyScanner
 except:
     from uml import uml
+    from item import item
     from umldependencyscanner import UmlDependencyScanner
 
 class RestProcessor(docutils.nodes.SparseNodeVisitor):
@@ -436,6 +438,12 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
                 self._headers[header]['includes'] += depScanner.header_deps[header]
 
     def depart_uml(self, node: uml) -> None:
+        pass
+
+    def visit_item(self, node: item) -> None:
+        pass
+
+    def depart_item(self, node: item) -> None:
         pass
 
     def visit_field(self, node: docutils.nodes.field) -> None:

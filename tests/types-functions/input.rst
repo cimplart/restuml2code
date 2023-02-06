@@ -1,3 +1,6 @@
+####################
+Public DET Interface
+####################
 
 :module: Det
 
@@ -121,9 +124,9 @@ Det_ConfigType
     | Description: | Configuration data structure of the Det module.                                            |
     +--------------+--------------------------------------------------------------------------------------------+
     | Kind:        | Structure                                                                                  |
-    +--------------+------------------------+------------------+------------------------------------------------+
-    | Declared in: | Det_Types.h                                                                                |
     +--------------+--------------------------------------------------------------------------------------------+
+    | Declared in: | Det_Types.h                                                                                |
+    +--------------+------------------------+------------------+------------------------------------------------+
     | Elements:    | boolean                | forwardToDlt     | When true, the Det requires the Dlt interface  |
     |              |                        |                  | and forwards it's call to the function         |
     |              |                        |                  | Dlt_DetForwardErrorTrace.                      |
@@ -172,6 +175,9 @@ Module Interface Functions
 Det_Init
 --------
 
+.. item:: SWD-Det_Init
+    :status: Draft
+
 .. table::
     :align: left
 
@@ -200,6 +206,9 @@ Det_Init
 
 Det_ReportError
 ---------------
+
+.. item:: SWD-Det_ReportError
+    :depends_on: SWD-Det_Init
 
 .. table::
     :align: left
@@ -276,3 +285,4 @@ Det_TestVaArgs
 Some chapter
 ------------
 
+.. todo:: Testing todo directive

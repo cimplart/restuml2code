@@ -1,4 +1,8 @@
-.. sectnum::
+######################
+Public CanSm Interface
+######################
+
+'.. sectnum::
 
 Structural Design
 *****************

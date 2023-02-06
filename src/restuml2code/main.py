@@ -33,9 +33,11 @@ import os
 try:
     from .restprocessor import RestProcessor
     from .uml import uml
+    from .item import item
 except:
     from restprocessor import RestProcessor
     from uml import uml
+    from item import item
 
 class UmlDirective(Directive):
 
@@ -52,6 +54,34 @@ class UmlDirective(Directive):
         text = '\n'.join(self.content)
         uml_node = self.node_class(rawsource=text)
         return [uml_node]
+
+class ItemDirective(Directive):
+
+    required_arguments = 1
+    optional_arguments = 0
+    final_argument_whitespace = True
+    option_spec = {}
+    has_content = False
+
+    node_class = item
+
+    def run(self):
+        text = '\n'.join(self.content)
+        item_node = self.node_class(rawsource=text)
+        # Parse the directive contents.
+        self.state.nested_parse(self.content, self.content_offset, item_node)
+        return [ item_node ]
+
+class IgnoredDirective(Directive):
+
+    required_arguments = 0
+    optional_arguments = 0
+    final_argument_whitespace = True
+    option_spec = {}
+    has_content = True
+
+    def run(self):
+        return []
 
 def parse_rst(srcpath: str, text: str) -> docutils.nodes.document:
     parser = docutils.parsers.rst.Parser()
@@ -81,6 +111,8 @@ def main():
     args = vars(parser.parse_args())
 
     directives.register_directive('uml', UmlDirective)
+    directives.register_directive('item', ItemDirective)
+    directives.register_directive('todo', IgnoredDirective)
 
     # Prevent the 'Unknown interpreted text role' errors from docutils parser.
     for role in sphinx_roles:

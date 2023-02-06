@@ -3,5 +3,6 @@ mako
 pytest
 sphinx
 sphinxcontrib-plantuml
+mlx.traceability
 twine
 lark
