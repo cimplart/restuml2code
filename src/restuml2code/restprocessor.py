@@ -268,7 +268,7 @@ class RestProcessor(docutils.nodes.SparseNodeVisitor):
             if colnum == 2:
                 self._elem_attributes[self._attr_to_add].append({ 'name': content })
             elif colnum == 3:
-                self._elem_attributes[self._attr_to_add][-1]['value'] = content
+                self._elem_attributes[self._attr_to_add][-1]['value'] = content.replace('\n', ' \\\n   ')
             else:
                 self._elem_attributes[self._attr_to_add][-1]['description'] = self._get_description(content)
 
