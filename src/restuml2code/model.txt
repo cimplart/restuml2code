@@ -1,0 +1,98 @@
+Processor._headers: key=header_name: str, value=dict {
+    'functions': list[ function ]
+    'types': list[ type ]
+    'variables': list [ variables_group ]
+    'macro-constants': list [ macro_constants_group ]
+    'macro-functions': list [ macro_function ]
+    'includes': list [ str ]
+    'file-name': str
+    'description': str
+    'generated': bool
+}
+
+function = dict {
+    'description': str
+    'syntax': str
+    'in-params': list[ parameter ]
+    'out-params': list[ parameter ]
+    'inout-params': list[ parameter ]
+    'return-value': dict {
+        type: str
+        description: str
+    }
+    'private': bool
+    'description': str
+    'allowed-from-isr': str
+    'is-reentrant': str
+}
+
+parameter = dict {
+    name: str
+    description: str
+}
+
+type = dict {
+    'description': str
+    'kind': str
+    if 'kind' == 'Typedef':
+        'type': str
+    elif 'kind' == "Structure':
+        'type-name': str
+        'elements': list[ struct-element ]
+    elif 'kind' == 'Enumeration':
+        'type-name': str
+        'constants': list[ constant ]
+    endif
+    }
+
+struct-element = dict {
+    'description': str
+    'type': str
+    'field': str
+}
+
+constant = dict {
+    'name': str
+    'description': str
+    'value': str
+}
+
+variables_group = {
+    'variables-group': str
+    'variables': list [ variable ]
+}
+
+variable = dict {
+    'syntax': str
+    'description': str
+}
+
+macro_constants_group = dict {
+    'constants-group': str
+    'constants': list[ macro_constant ]
+}
+
+macro_constant = dict {
+    'name': str
+    'value': str
+    'description': str
+}
+
+macro_function = dict {
+    'description': str
+    'syntax': str
+    'in-params': list[ parameter ]
+    'out-params': list[ parameter ]
+    'inout-params': list[ parameter ]
+    'return-value': dict {
+        type: str
+        description: str
+    }
+    'definition': list [ conditional_code ]
+}
+
+conditional_code = dict {
+    'prepro-conditional': str
+    'condition': str
+    'code': str
+}
