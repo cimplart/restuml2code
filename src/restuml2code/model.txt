@@ -1,4 +1,5 @@
 Processor._headers: key=header_name: str, value=dict {
+    'module': str
     'functions': list[ function ]
     'types': list[ type ]
     'variables': list [ variables_group ]
